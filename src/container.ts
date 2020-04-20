@@ -3,6 +3,7 @@ import dockerode, { ContainerInspectInfo } from "dockerode";
 import { Duration, TemporalUnit } from "node-duration";
 import { Command, ContainerName, ExitCode } from "./docker-client";
 import { Port } from "./port";
+import { Host } from "./docker-client-factory";
 
 export type Id = string;
 
@@ -10,6 +11,7 @@ export type HealthCheckStatus = "none" | "starting" | "unhealthy" | "healthy";
 
 export type InspectResult = {
   internalPorts: Port[];
+  internalIp: Host;
   hostPorts: Port[];
   name: ContainerName;
   healthCheckStatus: HealthCheckStatus;
@@ -108,6 +110,7 @@ export class DockerodeContainer implements Container {
     return {
       hostPorts: this.getHostPorts(inspectResult),
       internalPorts: this.getInternalPorts(inspectResult),
+      internalIp: this.getInternalIp(inspectResult),
       name: this.getName(inspectResult),
       healthCheckStatus: this.getHealthCheckStatus(inspectResult)
     };
@@ -119,6 +122,10 @@ export class DockerodeContainer implements Container {
 
   private getInternalPorts(inspectInfo: ContainerInspectInfo): Port[] {
     return Object.keys(inspectInfo.NetworkSettings.Ports).map(port => Number(port.split("/")[0]));
+  }
+
+  private getInternalIp(inspectInfo: ContainerInspectInfo): Host {
+    return inspectInfo.NetworkSettings.IPAddress
   }
 
   private getHostPorts(inspectInfo: ContainerInspectInfo): Port[] {

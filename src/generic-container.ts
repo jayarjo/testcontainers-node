@@ -1,6 +1,6 @@
 import { Duration, TemporalUnit } from "node-duration";
 import { BoundPorts } from "./bound-ports";
-import { Container, Id as ContainerId } from "./container";
+import { Container, Id as ContainerId, InspectResult } from "./container";
 import { ContainerState } from "./container-state";
 import {
   AuthConfig,
@@ -233,6 +233,10 @@ class StartedGenericContainer implements StartedTestContainer {
 
   public getContainerIpAddress(): Host {
     return this.host;
+  }
+
+  public inspect(): Promise<InspectResult> {
+    return this.container.inspect();
   }
 
   public getMappedPort(port: Port): Port {

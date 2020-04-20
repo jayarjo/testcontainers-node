@@ -1,5 +1,5 @@
 import { Duration, TemporalUnit } from "node-duration";
-import { Id as ContainerId } from "./container";
+import { Id as ContainerId, InspectResult } from "./container";
 import {
   AuthConfig,
   BindMode,
@@ -51,6 +51,7 @@ export interface StartedTestContainer {
   getMappedPort(port: Port): Port;
   getName(): ContainerName;
   getId(): ContainerId;
+  inspect(): Promise<InspectResult>;
   exec(command: Command[]): Promise<ExecResult>;
 }
 
