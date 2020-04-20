@@ -231,6 +231,11 @@ class StartedGenericContainer implements StartedTestContainer {
     return new StoppedGenericContainer();
   }
 
+  public async remove(options: OptionalStopOptions = {}): Promise<void> {
+    const resolvedOptions = { ...DEFAULT_STOP_OPTIONS, ...options };
+    await this.container.remove({ removeVolumes: resolvedOptions.removeVolumes });
+  }
+
   public getContainerIpAddress(): Host {
     return this.host;
   }

@@ -2,8 +2,8 @@ import byline from "byline";
 import dockerode, { ContainerInspectInfo } from "dockerode";
 import { Duration, TemporalUnit } from "node-duration";
 import { Command, ContainerName, ExitCode } from "./docker-client";
-import { Port } from "./port";
 import { Host } from "./docker-client-factory";
+import { Port } from "./port";
 
 export type Id = string;
 
@@ -125,7 +125,7 @@ export class DockerodeContainer implements Container {
   }
 
   private getInternalIp(inspectInfo: ContainerInspectInfo): Host {
-    return inspectInfo.NetworkSettings.IPAddress
+    return inspectInfo.NetworkSettings.IPAddress;
   }
 
   private getHostPorts(inspectInfo: ContainerInspectInfo): Port[] {

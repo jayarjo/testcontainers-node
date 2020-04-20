@@ -181,12 +181,9 @@ export class DockerodeClient implements DockerClient {
   }
 
   private getEnv(env: Env): DockerodeEnvironment {
-    return Object.entries(env).reduce(
-      (dockerodeEnvironment, [key, value]) => {
-        return [...dockerodeEnvironment, `${key}=${value}`];
-      },
-      [] as DockerodeEnvironment
-    );
+    return Object.entries(env).reduce((dockerodeEnvironment, [key, value]) => {
+      return [...dockerodeEnvironment, `${key}=${value}`];
+    }, [] as DockerodeEnvironment);
   }
 
   private getHealthCheck(healthCheck?: HealthCheck): DockerodeHealthCheck | undefined {

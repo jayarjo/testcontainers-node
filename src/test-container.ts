@@ -47,6 +47,7 @@ export const DEFAULT_STOP_OPTIONS: StopOptions = {
 
 export interface StartedTestContainer {
   stop(options?: OptionalStopOptions): Promise<StoppedTestContainer>;
+  remove(): Promise<void>;
   getContainerIpAddress(): Host;
   getMappedPort(port: Port): Port;
   getName(): ContainerName;
