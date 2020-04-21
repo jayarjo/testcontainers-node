@@ -65,6 +65,11 @@ class DockerodeContainer {
             });
         });
     }
+    inspectFull() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.container.inspect();
+        });
+    }
     inspect() {
         return __awaiter(this, void 0, void 0, function* () {
             const inspectResult = yield this.container.inspect();

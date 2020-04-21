@@ -1,3 +1,4 @@
+import { ContainerInspectInfo } from "dockerode";
 import { Duration, TemporalUnit } from "node-duration";
 import { Id as ContainerId, InspectResult } from "./container";
 import {
@@ -53,6 +54,7 @@ export interface StartedTestContainer {
   getName(): ContainerName;
   getId(): ContainerId;
   inspect(): Promise<InspectResult>;
+  inspectFull(): Promise<ContainerInspectInfo>;
   exec(command: Command[]): Promise<ExecResult>;
 }
 

@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import dockerode from "dockerode";
+import dockerode, { ContainerInspectInfo } from "dockerode";
 import { Duration } from "node-duration";
 import { Command, ContainerName, ExitCode } from "./docker-client";
 import { Host } from "./docker-client-factory";
@@ -39,6 +39,7 @@ export interface Container {
     exec(options: ExecOptions): Promise<Exec>;
     logs(): Promise<NodeJS.ReadableStream>;
     inspect(): Promise<InspectResult>;
+    inspectFull(): Promise<ContainerInspectInfo>;
 }
 export declare class DockerodeContainer implements Container {
     private readonly container;
@@ -49,6 +50,7 @@ export declare class DockerodeContainer implements Container {
     remove(options: RemoveOptions): Promise<void>;
     exec(options: ExecOptions): Promise<Exec>;
     logs(): Promise<NodeJS.ReadableStream>;
+    inspectFull(): Promise<ContainerInspectInfo>;
     inspect(): Promise<InspectResult>;
     private getName;
     private getInternalPorts;

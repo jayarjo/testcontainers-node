@@ -1,3 +1,4 @@
+import { ContainerInspectInfo } from "dockerode";
 import { Duration, TemporalUnit } from "node-duration";
 import { BoundPorts } from "./bound-ports";
 import { Container, Id as ContainerId, InspectResult } from "./container";
@@ -242,6 +243,10 @@ class StartedGenericContainer implements StartedTestContainer {
 
   public inspect(): Promise<InspectResult> {
     return this.container.inspect();
+  }
+
+  public inspectFull(): Promise<ContainerInspectInfo> {
+    return this.container.inspectFull();
   }
 
   public getMappedPort(port: Port): Port {

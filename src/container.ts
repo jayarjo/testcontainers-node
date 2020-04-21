@@ -48,6 +48,7 @@ export interface Container {
   exec(options: ExecOptions): Promise<Exec>;
   logs(): Promise<NodeJS.ReadableStream>;
   inspect(): Promise<InspectResult>;
+  inspectFull(): Promise<ContainerInspectInfo>;
 }
 
 export class DockerodeContainer implements Container {
@@ -103,6 +104,10 @@ export class DockerodeContainer implements Container {
         }
       });
     });
+  }
+
+  public async inspectFull(): Promise<ContainerInspectInfo> {
+    return this.container.inspect();
   }
 
   public async inspect(): Promise<InspectResult> {

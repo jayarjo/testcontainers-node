@@ -192,6 +192,9 @@ class StartedGenericContainer {
     inspect() {
         return this.container.inspect();
     }
+    inspectFull() {
+        return this.container.inspectFull();
+    }
     getMappedPort(port) {
         return this.boundPorts.getBinding(port);
     }
