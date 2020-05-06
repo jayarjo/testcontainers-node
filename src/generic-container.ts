@@ -1,6 +1,7 @@
+import { ContainerInspectInfo } from "dockerode";
 import { Duration, TemporalUnit } from "node-duration";
 import { BoundPorts } from "./bound-ports";
-import { Container, Id as ContainerId } from "./container";
+import { Container, Id as ContainerId, InspectResult } from "./container";
 import { ContainerState } from "./container-state";
 import {
   AuthConfig,
@@ -243,8 +244,21 @@ class StartedGenericContainer implements StartedTestContainer {
     return new StoppedGenericContainer();
   }
 
+  public async remove(options: OptionalStopOptions = {}): Promise<void> {
+    const resolvedOptions = { ...DEFAULT_STOP_OPTIONS, ...options };
+    await this.container.remove({ removeVolumes: resolvedOptions.removeVolumes });
+  }
+
   public getContainerIpAddress(): Host {
     return this.host;
+  }
+
+  public inspect(): Promise<InspectResult> {
+    return this.container.inspect();
+  }
+
+  public inspectFull(): Promise<ContainerInspectInfo> {
+    return this.container.inspectFull();
   }
 
   public getMappedPort(port: Port): Port {

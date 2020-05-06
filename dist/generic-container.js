@@ -188,8 +188,20 @@ class StartedGenericContainer {
             return new StoppedGenericContainer();
         });
     }
+    remove(options = {}) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const resolvedOptions = Object.assign(Object.assign({}, test_container_1.DEFAULT_STOP_OPTIONS), options);
+            yield this.container.remove({ removeVolumes: resolvedOptions.removeVolumes });
+        });
+    }
     getContainerIpAddress() {
         return this.host;
+    }
+    inspect() {
+        return this.container.inspect();
+    }
+    inspectFull() {
+        return this.container.inspectFull();
     }
     getMappedPort(port) {
         return this.boundPorts.getBinding(port);

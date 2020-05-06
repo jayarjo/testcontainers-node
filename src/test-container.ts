@@ -1,5 +1,6 @@
+import { ContainerInspectInfo } from "dockerode";
 import { Duration, TemporalUnit } from "node-duration";
-import { Id as ContainerId } from "./container";
+import { Id as ContainerId, InspectResult } from "./container";
 import {
   AuthConfig,
   BindMode,
@@ -48,10 +49,13 @@ export const DEFAULT_STOP_OPTIONS: StopOptions = {
 
 export interface StartedTestContainer {
   stop(options?: OptionalStopOptions): Promise<StoppedTestContainer>;
+  remove(): Promise<void>;
   getContainerIpAddress(): Host;
   getMappedPort(port: Port): Port;
   getName(): ContainerName;
   getId(): ContainerId;
+  inspect(): Promise<InspectResult>;
+  inspectFull(): Promise<ContainerInspectInfo>;
   exec(command: Command[]): Promise<ExecResult>;
 }
 

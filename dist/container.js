@@ -65,12 +65,18 @@ class DockerodeContainer {
             });
         });
     }
+    inspectFull() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.container.inspect();
+        });
+    }
     inspect() {
         return __awaiter(this, void 0, void 0, function* () {
             const inspectResult = yield this.container.inspect();
             return {
                 hostPorts: this.getHostPorts(inspectResult),
                 internalPorts: this.getInternalPorts(inspectResult),
+                internalIp: this.getInternalIp(inspectResult),
                 name: this.getName(inspectResult),
                 healthCheckStatus: this.getHealthCheckStatus(inspectResult)
             };
@@ -81,6 +87,9 @@ class DockerodeContainer {
     }
     getInternalPorts(inspectInfo) {
         return Object.keys(inspectInfo.NetworkSettings.Ports).map(port => Number(port.split("/")[0]));
+    }
+    getInternalIp(inspectInfo) {
+        return inspectInfo.NetworkSettings.IPAddress;
     }
     getHostPorts(inspectInfo) {
         return Object.values(inspectInfo.NetworkSettings.Ports)

@@ -1,5 +1,6 @@
+import { ContainerInspectInfo } from "dockerode";
 import { Duration } from "node-duration";
-import { Id as ContainerId } from "./container";
+import { Id as ContainerId, InspectResult } from "./container";
 import { AuthConfig, BindMode, Command, ContainerName, Dir, EnvKey, EnvValue, ExecResult, NetworkMode, TmpFs } from "./docker-client";
 import { Host } from "./docker-client-factory";
 import { Port } from "./port";
@@ -29,10 +30,13 @@ interface StopOptions {
 export declare const DEFAULT_STOP_OPTIONS: StopOptions;
 export interface StartedTestContainer {
     stop(options?: OptionalStopOptions): Promise<StoppedTestContainer>;
+    remove(): Promise<void>;
     getContainerIpAddress(): Host;
     getMappedPort(port: Port): Port;
     getName(): ContainerName;
     getId(): ContainerId;
+    inspect(): Promise<InspectResult>;
+    inspectFull(): Promise<ContainerInspectInfo>;
     exec(command: Command[]): Promise<ExecResult>;
 }
 export interface StoppedTestContainer {

@@ -2,6 +2,7 @@ import byline from "byline";
 import dockerode, { ContainerInspectInfo } from "dockerode";
 import { Duration, TemporalUnit } from "node-duration";
 import { Command, ContainerName, ExitCode } from "./docker-client";
+import { Host } from "./docker-client-factory";
 import { Port } from "./port";
 
 export type Id = string;
@@ -10,6 +11,7 @@ export type HealthCheckStatus = "none" | "starting" | "unhealthy" | "healthy";
 
 export type InspectResult = {
   internalPorts: Port[];
+  internalIp: Host;
   hostPorts: Port[];
   name: ContainerName;
   healthCheckStatus: HealthCheckStatus;
@@ -46,6 +48,7 @@ export interface Container {
   exec(options: ExecOptions): Promise<Exec>;
   logs(): Promise<NodeJS.ReadableStream>;
   inspect(): Promise<InspectResult>;
+  inspectFull(): Promise<ContainerInspectInfo>;
 }
 
 export class DockerodeContainer implements Container {
@@ -103,11 +106,16 @@ export class DockerodeContainer implements Container {
     });
   }
 
+  public async inspectFull(): Promise<ContainerInspectInfo> {
+    return this.container.inspect();
+  }
+
   public async inspect(): Promise<InspectResult> {
     const inspectResult = await this.container.inspect();
     return {
       hostPorts: this.getHostPorts(inspectResult),
       internalPorts: this.getInternalPorts(inspectResult),
+      internalIp: this.getInternalIp(inspectResult),
       name: this.getName(inspectResult),
       healthCheckStatus: this.getHealthCheckStatus(inspectResult)
     };
@@ -119,6 +127,10 @@ export class DockerodeContainer implements Container {
 
   private getInternalPorts(inspectInfo: ContainerInspectInfo): Port[] {
     return Object.keys(inspectInfo.NetworkSettings.Ports).map(port => Number(port.split("/")[0]));
+  }
+
+  private getInternalIp(inspectInfo: ContainerInspectInfo): Host {
+    return inspectInfo.NetworkSettings.IPAddress;
   }
 
   private getHostPorts(inspectInfo: ContainerInspectInfo): Port[] {
