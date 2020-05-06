@@ -228,7 +228,25 @@ export class GenericContainer implements TestContainer {
   }
 }
 
-class StartedGenericContainer implements StartedTestContainer {
+export class StartedGenericContainer implements StartedTestContainer {
+  public static async findByName(
+    name: string,
+    dockerClientFactory: DockerClientFactory = new DockerodeClientFactory()
+  ): Promise<StartedGenericContainer> {
+    const dockerClient = dockerClientFactory.getClient();
+    const { Id, Ports } = await dockerClient.retrieveContainerInfoByName(name);
+
+    return new StartedGenericContainer(
+      dockerClient.getContainer(Id),
+      dockerClient.getHost(),
+      Ports.reduce(
+        (boundPorts, { PrivatePort, PublicPort }) => boundPorts.setBinding(PrivatePort, PublicPort),
+        new BoundPorts()
+      ),
+      name,
+      dockerClient
+    );
+  }
   constructor(
     private readonly container: Container,
     private readonly host: Host,

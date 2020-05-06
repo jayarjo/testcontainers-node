@@ -1,4 +1,4 @@
-import Dockerode, { PortMap as DockerodePortBindings } from "dockerode";
+import Dockerode, { ContainerInfo, PortMap as DockerodePortBindings } from "dockerode";
 import { Duration, TemporalUnit } from "node-duration";
 import streamToArray from "stream-to-array";
 import tar from "tar-fs";
@@ -86,6 +86,8 @@ type CreateOptions = {
 export interface DockerClient {
   pull(repoTag: RepoTag, authConfig?: AuthConfig): Promise<void>;
   create(options: CreateOptions): Promise<Container>;
+  getContainer(id: string): Container;
+  retrieveContainerInfoByName(name: string): Promise<ContainerInfo>;
   start(container: Container): Promise<void>;
   exec(container: Container, command: Command[]): Promise<ExecResult>;
   buildImage(repoTag: RepoTag, context: BuildContext, buildArgs: BuildArgs): Promise<void>;
@@ -102,6 +104,21 @@ export class DockerodeClient implements DockerClient {
       authconfig: authConfig
     });
     await streamToArray(stream);
+  }
+
+  public getContainer(id: string): Container {
+    log.info(`Getting container by id: ${id}`);
+    return new DockerodeContainer(this.dockerode.getContainer(id));
+  }
+
+  public async retrieveContainerInfoByName(name: string): Promise<ContainerInfo> {
+    log.info(`Looking up a container with the name: ${name}`);
+    const [containerInfo] = await this.dockerode.listContainers({
+      filters: {
+        name: [name]
+      }
+    });
+    return containerInfo;
   }
 
   public async create(options: CreateOptions): Promise<Container> {
