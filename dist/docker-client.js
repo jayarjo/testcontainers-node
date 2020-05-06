@@ -32,6 +32,21 @@ class DockerodeClient {
             yield stream_to_array_1.default(stream);
         });
     }
+    getContainer(id) {
+        logger_1.default.info(`Getting container by id: ${id}`);
+        return new container_1.DockerodeContainer(this.dockerode.getContainer(id));
+    }
+    retrieveContainerInfoByName(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            logger_1.default.info(`Looking up a container with the name: ${name}`);
+            const [containerInfo] = yield this.dockerode.listContainers({
+                filters: {
+                    name: [name]
+                }
+            });
+            return containerInfo;
+        });
+    }
     create(options) {
         return __awaiter(this, void 0, void 0, function* () {
             logger_1.default.info(`Creating container for image: ${options.repoTag}`);

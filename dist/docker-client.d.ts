@@ -1,4 +1,4 @@
-import Dockerode from "dockerode";
+import Dockerode, { ContainerInfo } from "dockerode";
 import { Duration } from "node-duration";
 import { BoundPorts } from "./bound-ports";
 import { Container } from "./container";
@@ -64,6 +64,8 @@ declare type CreateOptions = {
 export interface DockerClient {
     pull(repoTag: RepoTag, authConfig?: AuthConfig): Promise<void>;
     create(options: CreateOptions): Promise<Container>;
+    getContainer(id: string): Container;
+    retrieveContainerInfoByName(name: string): Promise<ContainerInfo>;
     start(container: Container): Promise<void>;
     exec(container: Container, command: Command[]): Promise<ExecResult>;
     buildImage(repoTag: RepoTag, context: BuildContext, buildArgs: BuildArgs): Promise<void>;
@@ -75,6 +77,8 @@ export declare class DockerodeClient implements DockerClient {
     private readonly dockerode;
     constructor(host: Host, dockerode: Dockerode);
     pull(repoTag: RepoTag, authConfig?: AuthConfig): Promise<void>;
+    getContainer(id: string): Container;
+    retrieveContainerInfoByName(name: string): Promise<ContainerInfo>;
     create(options: CreateOptions): Promise<Container>;
     start(container: Container): Promise<void>;
     exec(container: Container, command: Command[]): Promise<ExecResult>;

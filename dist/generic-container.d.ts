@@ -1,9 +1,12 @@
+import { ContainerInspectInfo } from "dockerode";
 import { Duration } from "node-duration";
-import { AuthConfig, BindMode, BuildContext, Command, ContainerName, Dir, EnvKey, EnvValue, HealthCheck, NetworkMode, TmpFs } from "./docker-client";
-import { DockerClientFactory } from "./docker-client-factory";
+import { BoundPorts } from "./bound-ports";
+import { Container, Id as ContainerId, InspectResult } from "./container";
+import { AuthConfig, BindMode, BuildContext, Command, ContainerName, Dir, DockerClient, EnvKey, EnvValue, ExecResult, HealthCheck, NetworkMode, TmpFs } from "./docker-client";
+import { DockerClientFactory, Host } from "./docker-client-factory";
 import { Port } from "./port";
 import { Image, Tag } from "./repo-tag";
-import { StartedTestContainer, TestContainer } from "./test-container";
+import { OptionalStopOptions, StartedTestContainer, StoppedTestContainer, TestContainer } from "./test-container";
 import { Uuid } from "./uuid";
 import { WaitStrategy } from "./wait-strategy";
 export declare class GenericContainerBuilder {
@@ -53,4 +56,22 @@ export declare class GenericContainer implements TestContainer {
     hasRepoTagLocally(): Promise<boolean>;
     private waitForContainer;
     private getWaitStrategy;
+}
+export declare class StartedGenericContainer implements StartedTestContainer {
+    private readonly container;
+    private readonly host;
+    private readonly boundPorts;
+    private readonly name;
+    private readonly dockerClient;
+    static findByName(name: string, dockerClientFactory?: DockerClientFactory): Promise<StartedGenericContainer>;
+    constructor(container: Container, host: Host, boundPorts: BoundPorts, name: ContainerName, dockerClient: DockerClient);
+    stop(options?: OptionalStopOptions): Promise<StoppedTestContainer>;
+    remove(options?: OptionalStopOptions): Promise<void>;
+    getContainerIpAddress(): Host;
+    inspect(): Promise<InspectResult>;
+    inspectFull(): Promise<ContainerInspectInfo>;
+    getMappedPort(port: Port): Port;
+    getId(): ContainerId;
+    getName(): ContainerName;
+    exec(command: Command[]): Promise<ExecResult>;
 }
