@@ -113,7 +113,8 @@ class DockerodeExec {
     }
     start() {
         return new Promise((resolve, reject) => {
-            this.exec.start((err, stream) => {
+            const options = { Detach: false, Tty: true, stream: true, stdin: true, stdout: true, stderr: true };
+            this.exec.start(options, (err, stream) => {
                 if (err) {
                     return reject(err);
                 }

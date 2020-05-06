@@ -159,7 +159,7 @@ class GenericContainer {
             logger_1.default.debug("Waiting for container to be ready");
             const waitStrategy = this.getWaitStrategy(container);
             yield waitStrategy.withStartupTimeout(this.startupTimeout).waitUntilReady(container, containerState, boundPorts);
-            logger_1.default.debug("Container is ready");
+            logger_1.default.info("Container is ready");
         });
     }
     getWaitStrategy(container) {
