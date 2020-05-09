@@ -69,6 +69,26 @@ class DockerodeClient {
             return new container_1.DockerodeContainer(dockerodeContainer);
         });
     }
+    getNetwork(id) {
+        return this.dockerode.getNetwork(id);
+    }
+    createNetwork(options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            logger_1.default.info(`Creating network ${options.name}`);
+            const network = yield this.dockerode.createNetwork(options);
+            return network.id;
+        });
+    }
+    removeNetwork(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            logger_1.default.info(`Removing network ${id}`);
+            const network = this.getNetwork(id);
+            const { message } = yield network.remove();
+            if (message) {
+                logger_1.default.warn(message);
+            }
+        });
+    }
     start(container) {
         logger_1.default.info(`Starting container with ID: ${container.getId()}`);
         return container.start();

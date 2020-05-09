@@ -5,3 +5,5 @@ exports.GenericContainer = generic_container_1.GenericContainer;
 exports.GenericContainerBuilder = generic_container_1.GenericContainerBuilder;
 var wait_1 = require("./wait");
 exports.Wait = wait_1.Wait;
+var network_1 = require("./network");
+exports.Network = network_1.Network;

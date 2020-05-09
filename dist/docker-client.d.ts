@@ -1,8 +1,9 @@
-import Dockerode, { ContainerInfo } from "dockerode";
+import Dockerode, { ContainerInfo, Network } from "dockerode";
 import { Duration } from "node-duration";
 import { BoundPorts } from "./bound-ports";
 import { Container } from "./container";
 import { Host } from "./docker-client-factory";
+import { CreateNetworkOptions } from "./network";
 import { RepoTag } from "./repo-tag";
 export declare type Command = string;
 export declare type ContainerName = string;
@@ -66,6 +67,9 @@ export interface DockerClient {
     create(options: CreateOptions): Promise<Container>;
     getContainer(id: string): Container;
     retrieveContainerInfoByName(name: string): Promise<ContainerInfo>;
+    getNetwork(id: string): Network;
+    createNetwork(options: CreateNetworkOptions): Promise<string>;
+    removeNetwork(id: string): Promise<void>;
     start(container: Container): Promise<void>;
     exec(container: Container, command: Command[]): Promise<ExecResult>;
     buildImage(repoTag: RepoTag, context: BuildContext, buildArgs: BuildArgs): Promise<void>;
@@ -80,6 +84,9 @@ export declare class DockerodeClient implements DockerClient {
     getContainer(id: string): Container;
     retrieveContainerInfoByName(name: string): Promise<ContainerInfo>;
     create(options: CreateOptions): Promise<Container>;
+    getNetwork(id: string): Network;
+    createNetwork(options: CreateNetworkOptions): Promise<string>;
+    removeNetwork(id: string): Promise<void>;
     start(container: Container): Promise<void>;
     exec(container: Container, command: Command[]): Promise<ExecResult>;
     buildImage(repoTag: RepoTag, context: BuildContext, buildArgs: BuildArgs): Promise<void>;
