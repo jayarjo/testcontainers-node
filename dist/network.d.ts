@@ -19,7 +19,15 @@ export declare type NetworkInfo = CreateNetworkOptions & {
     containers: string[];
     created: string;
 };
-declare class StartedNetwork {
+export interface TestNetwork {
+    isInitialized: boolean;
+    getId(): string;
+    getName(): string;
+    close(): Promise<void>;
+    inspect(): Promise<NetworkInfo>;
+    hasContainers(): Promise<boolean>;
+}
+declare class StartedNetwork implements TestNetwork {
     private readonly id;
     private readonly options;
     private readonly dockerClientFactory;

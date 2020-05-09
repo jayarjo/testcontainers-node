@@ -20,7 +20,16 @@ export type NetworkInfo = CreateNetworkOptions & {
   created: string;
 };
 
-class StartedNetwork {
+export interface TestNetwork {
+  isInitialized: boolean;
+  getId(): string;
+  getName(): string;
+  close(): Promise<void>;
+  inspect(): Promise<NetworkInfo>;
+  hasContainers(): Promise<boolean>;
+}
+
+class StartedNetwork implements TestNetwork {
   private initialized = false;
   get isInitialized() {
     return this.initialized;
