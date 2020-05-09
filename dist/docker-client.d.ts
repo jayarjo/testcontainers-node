@@ -3,7 +3,7 @@ import { Duration } from "node-duration";
 import { BoundPorts } from "./bound-ports";
 import { Container } from "./container";
 import { Host } from "./docker-client-factory";
-import { CreateNetworkOptions } from "./network";
+import { CreateNetworkOptions, NetworkInfo } from "./network";
 import { RepoTag } from "./repo-tag";
 export declare type Command = string;
 export declare type ContainerName = string;
@@ -70,6 +70,7 @@ export interface DockerClient {
     getNetwork(id: string): Network;
     createNetwork(options: CreateNetworkOptions): Promise<string>;
     removeNetwork(id: string): Promise<void>;
+    findNetworkByName(name: string): Promise<NetworkInfo>;
     start(container: Container): Promise<void>;
     exec(container: Container, command: Command[]): Promise<ExecResult>;
     buildImage(repoTag: RepoTag, context: BuildContext, buildArgs: BuildArgs): Promise<void>;
@@ -87,6 +88,7 @@ export declare class DockerodeClient implements DockerClient {
     getNetwork(id: string): Network;
     createNetwork(options: CreateNetworkOptions): Promise<string>;
     removeNetwork(id: string): Promise<void>;
+    findNetworkByName(name: string): Promise<NetworkInfo>;
     start(container: Container): Promise<void>;
     exec(container: Container, command: Command[]): Promise<ExecResult>;
     buildImage(repoTag: RepoTag, context: BuildContext, buildArgs: BuildArgs): Promise<void>;

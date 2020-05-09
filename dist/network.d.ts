@@ -36,6 +36,7 @@ declare class StartedNetwork {
 export declare class Network {
     static newNetwork(partialOptions?: Partial<CreateNetworkOptions>, dockerClientFactory?: DockerodeClientFactory): Promise<StartedNetwork>;
     static fromId(id: string, dockerClientFactory?: DockerodeClientFactory): Promise<StartedNetwork>;
+    static fromName(name: string, dockerClientFactory?: DockerodeClientFactory): Promise<StartedNetwork>;
     constructor();
 }
 export {};

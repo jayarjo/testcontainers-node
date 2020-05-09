@@ -38,13 +38,16 @@ class DockerodeClient {
     }
     retrieveContainerInfoByName(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            logger_1.default.info(`Looking up a container with the name: ${name}`);
-            const [containerInfo] = yield this.dockerode.listContainers({
+            logger_1.default.info(`Looking for a container with the name: ${name}`);
+            const infos = yield this.dockerode.listContainers({
                 filters: {
                     name: [name]
                 }
             });
-            return containerInfo;
+            if (!infos.length) {
+                throw new Error(`Container with the name of ${name} not found`);
+            }
+            return infos[0];
         });
     }
     create(options) {
@@ -87,6 +90,20 @@ class DockerodeClient {
             if (message) {
                 logger_1.default.warn(message);
             }
+        });
+    }
+    findNetworkByName(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            logger_1.default.info(`Looking for a network with the name ${name}`);
+            const networks = yield this.dockerode.listNetworks({
+                filters: {
+                    name: [name]
+                }
+            });
+            if (!networks.length) {
+                throw new Error(`Network with the name of ${name} not found`);
+            }
+            return networks[0];
         });
     }
     start(container) {

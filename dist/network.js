@@ -42,7 +42,7 @@ class StartedNetwork {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const info = yield this.network.inspect();
-                return utils_1.lowerKeysDeep(info);
+                return utils_1.lowerKeysDeep(info, ["IPAM"]);
             }
             catch (ex) {
                 this.initialized = false;
@@ -69,7 +69,13 @@ class Network {
         return __awaiter(this, void 0, void 0, function* () {
             const network = dockerClientFactory.getClient().getNetwork(id);
             const info = yield network.inspect();
-            return new StartedNetwork(id, utils_1.lowerKeysDeep(info), dockerClientFactory);
+            return new StartedNetwork(id, utils_1.lowerKeysDeep(info, ["IPAM"]), dockerClientFactory);
+        });
+    }
+    static fromName(name, dockerClientFactory = new docker_client_factory_1.DockerodeClientFactory()) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const info = utils_1.lowerKeysDeep(yield dockerClientFactory.getClient().findNetworkByName(name), ["IPAM"]);
+            return new StartedNetwork(info.id, info, dockerClientFactory);
         });
     }
     constructor() {

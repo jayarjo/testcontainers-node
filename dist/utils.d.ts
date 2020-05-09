@@ -1,4 +1,4 @@
-export declare const lowerKeysDeep: (obj: any) => any;
+export declare const lowerKeysDeep: (obj: any, ignoreKeys?: string[]) => any;
 export declare type Empty = undefined | null | false | "";
 export declare const isEmptyString: (value: any) => value is string;
 export declare const isEmptyObj: (obj: any) => boolean;

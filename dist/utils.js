@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
-exports.lowerKeysDeep = (obj) => {
-    return lodash_1.mapKeys(lodash_1.mapValues(obj, value => (lodash_1.isObject(value) ? exports.lowerKeysDeep(value) : value)), (_, key) => lodash_1.lowerFirst(key));
+exports.lowerKeysDeep = (obj, ignoreKeys = []) => {
+    return lodash_1.mapKeys(lodash_1.mapValues(obj, value => (lodash_1.isObject(value) ? exports.lowerKeysDeep(value) : value)), (_, key) => (ignoreKeys.includes(key) ? key : lodash_1.lowerFirst(key)));
 };
 exports.isEmptyString = (value) => typeof value === "string" && value.trim() === "";
 exports.isEmptyObj = (obj) => {
