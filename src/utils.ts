@@ -1,9 +1,9 @@
 import { isObject, lowerFirst, mapKeys, mapValues } from "lodash";
 
-export const lowerKeysDeep = (obj: any): any => {
+export const lowerKeysDeep = (obj: any, ignoreKeys: string[] = []): any => {
   return mapKeys(
     mapValues(obj, value => (isObject(value) ? lowerKeysDeep(value) : value)),
-    (_, key) => lowerFirst(key)
+    (_, key) => (ignoreKeys.includes(key) ? key : lowerFirst(key))
   );
 };
 

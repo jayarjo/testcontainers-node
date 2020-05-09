@@ -54,7 +54,7 @@ class StartedNetwork {
   public async inspect(): Promise<NetworkInfo> {
     try {
       const info = await this.network.inspect();
-      return lowerKeysDeep(info);
+      return lowerKeysDeep(info, ["IPAM"]);
     } catch (ex) {
       this.initialized = false;
       throw ex;
@@ -92,7 +92,15 @@ export class Network {
   ): Promise<StartedNetwork> {
     const network = dockerClientFactory.getClient().getNetwork(id);
     const info = await network.inspect();
-    return new StartedNetwork(id, lowerKeysDeep(info), dockerClientFactory);
+    return new StartedNetwork(id, lowerKeysDeep(info, ["IPAM"]), dockerClientFactory);
+  }
+
+  public static async fromName(
+    name: string,
+    dockerClientFactory: DockerodeClientFactory = new DockerodeClientFactory()
+  ): Promise<StartedNetwork> {
+    const info = lowerKeysDeep(await dockerClientFactory.getClient().findNetworkByName(name), ["IPAM"]);
+    return new StartedNetwork(info.id, info, dockerClientFactory);
   }
 
   constructor() {

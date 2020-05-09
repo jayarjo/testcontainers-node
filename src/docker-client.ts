@@ -6,7 +6,7 @@ import { BoundPorts } from "./bound-ports";
 import { Container, DockerodeContainer } from "./container";
 import { Host } from "./docker-client-factory";
 import log from "./logger";
-import { CreateNetworkOptions } from "./network";
+import { CreateNetworkOptions, NetworkInfo } from "./network";
 import { PortString } from "./port";
 import { RepoTag } from "./repo-tag";
 
@@ -92,6 +92,7 @@ export interface DockerClient {
   getNetwork(id: string): Network;
   createNetwork(options: CreateNetworkOptions): Promise<string>;
   removeNetwork(id: string): Promise<void>;
+  findNetworkByName(name: string): Promise<NetworkInfo>;
   start(container: Container): Promise<void>;
   exec(container: Container, command: Command[]): Promise<ExecResult>;
   buildImage(repoTag: RepoTag, context: BuildContext, buildArgs: BuildArgs): Promise<void>;
@@ -116,13 +117,16 @@ export class DockerodeClient implements DockerClient {
   }
 
   public async retrieveContainerInfoByName(name: string): Promise<ContainerInfo> {
-    log.info(`Looking up a container with the name: ${name}`);
-    const [containerInfo] = await this.dockerode.listContainers({
+    log.info(`Looking for a container with the name: ${name}`);
+    const infos = await this.dockerode.listContainers({
       filters: {
         name: [name]
       }
     });
-    return containerInfo;
+    if (!infos.length) {
+      throw new Error(`Container with the name of ${name} not found`);
+    }
+    return infos[0];
   }
 
   public async create(options: CreateOptions): Promise<Container> {
@@ -165,6 +169,19 @@ export class DockerodeClient implements DockerClient {
     if (message) {
       log.warn(message);
     }
+  }
+
+  public async findNetworkByName(name: string): Promise<NetworkInfo> {
+    log.info(`Looking for a network with the name ${name}`);
+    const networks = await this.dockerode.listNetworks({
+      filters: {
+        name: [name]
+      }
+    });
+    if (!networks.length) {
+      throw new Error(`Network with the name of ${name} not found`);
+    }
+    return networks[0];
   }
 
   public start(container: Container): Promise<void> {

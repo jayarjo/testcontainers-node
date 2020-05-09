@@ -58,6 +58,16 @@ describe("Network", () => {
     expect(network2.isInitialized).toBe(false);
   });
 
+  it("Network.fromName()", async () => {
+    const name = `testcontainers-${Date.now()}`;
+    const network1 = await Network.newNetwork({
+      name
+    });
+    const network2 = await Network.fromName(name);
+    expect(network1.getId()).toBe(network2.getId());
+    await network1.close();
+  });
+
   it("Network.hasContainers()", async () => {
     const network = await Network.newNetwork();
     const container = await new GenericContainer("cristianrgreco/testcontainer", "1.1.12")
