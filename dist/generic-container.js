@@ -69,6 +69,13 @@ class GenericContainer {
     static fromDockerfile(context) {
         return new GenericContainerBuilder(context);
     }
+    static fromName(name, dockerClientFactory = new docker_client_factory_1.DockerodeClientFactory()) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const dockerClient = dockerClientFactory.getClient();
+            const { Id, Ports } = yield dockerClient.retrieveContainerInfoByName(name);
+            return new StartedGenericContainer(dockerClient.getContainer(Id), dockerClient.getHost(), Ports.reduce((boundPorts, { PrivatePort, PublicPort }) => boundPorts.setBinding(PrivatePort, PublicPort), new bound_ports_1.BoundPorts()), name, dockerClient);
+        });
+    }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
             if (!(yield this.hasRepoTagLocally())) {
@@ -180,13 +187,6 @@ class StartedGenericContainer {
         this.name = name;
         this.dockerClient = dockerClient;
     }
-    static findByName(name, dockerClientFactory = new docker_client_factory_1.DockerodeClientFactory()) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const dockerClient = dockerClientFactory.getClient();
-            const { Id, Ports } = yield dockerClient.retrieveContainerInfoByName(name);
-            return new StartedGenericContainer(dockerClient.getContainer(Id), dockerClient.getHost(), Ports.reduce((boundPorts, { PrivatePort, PublicPort }) => boundPorts.setBinding(PrivatePort, PublicPort), new bound_ports_1.BoundPorts()), name, dockerClient);
-        });
-    }
     stop(options = {}) {
         return __awaiter(this, void 0, void 0, function* () {
             const resolvedOptions = Object.assign(Object.assign({}, test_container_1.DEFAULT_STOP_OPTIONS), options);
@@ -223,6 +223,5 @@ class StartedGenericContainer {
         return this.dockerClient.exec(this.container, command);
     }
 }
-exports.StartedGenericContainer = StartedGenericContainer;
 class StoppedGenericContainer {
 }

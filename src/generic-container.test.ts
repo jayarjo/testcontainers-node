@@ -2,7 +2,7 @@ import { default as Dockerode } from "dockerode";
 import { Duration, TemporalUnit } from "node-duration";
 import fetch from "node-fetch";
 import path from "path";
-import { GenericContainer, StartedGenericContainer } from "./generic-container";
+import { GenericContainer } from "./generic-container";
 import { Wait } from "./wait";
 
 describe("GenericContainer", () => {
@@ -190,14 +190,14 @@ describe("GenericContainer", () => {
     await container.stop();
   });
 
-  it.only("StartedGenericContainer.findByName", async () => {
+  it("GenericContainer.fromName", async () => {
     const randomName = `test-container-${Date.now()}`;
     const container = await new GenericContainer("cristianrgreco/testcontainer", "1.1.12")
       .withExposedPort(8080, 8888)
       .withName(randomName)
       .start();
 
-    const foundContainer = await StartedGenericContainer.findByName(randomName);
+    const foundContainer = await GenericContainer.fromName(randomName);
     expect(foundContainer.getName()).toBe(randomName);
     expect(foundContainer.getMappedPort(8080)).toBe(8888);
 

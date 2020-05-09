@@ -23,6 +23,7 @@ export declare class GenericContainer implements TestContainer {
     readonly tag: Tag;
     readonly dockerClientFactory: DockerClientFactory;
     static fromDockerfile(context: BuildContext): GenericContainerBuilder;
+    static fromName(name: string, dockerClientFactory?: DockerClientFactory): Promise<StartedGenericContainer>;
     private readonly repoTag;
     private readonly dockerClient;
     private env;
@@ -57,13 +58,12 @@ export declare class GenericContainer implements TestContainer {
     private waitForContainer;
     private getWaitStrategy;
 }
-export declare class StartedGenericContainer implements StartedTestContainer {
+declare class StartedGenericContainer implements StartedTestContainer {
     private readonly container;
     private readonly host;
     private readonly boundPorts;
     private readonly name;
     private readonly dockerClient;
-    static findByName(name: string, dockerClientFactory?: DockerClientFactory): Promise<StartedGenericContainer>;
     constructor(container: Container, host: Host, boundPorts: BoundPorts, name: ContainerName, dockerClient: DockerClient);
     stop(options?: OptionalStopOptions): Promise<StoppedTestContainer>;
     remove(options?: OptionalStopOptions): Promise<void>;
@@ -75,3 +75,4 @@ export declare class StartedGenericContainer implements StartedTestContainer {
     getName(): ContainerName;
     exec(command: Command[]): Promise<ExecResult>;
 }
+export {};
