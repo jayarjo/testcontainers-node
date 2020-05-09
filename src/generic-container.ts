@@ -74,6 +74,25 @@ export class GenericContainer implements TestContainer {
     return new GenericContainerBuilder(context);
   }
 
+  public static async fromName(
+    name: string,
+    dockerClientFactory: DockerClientFactory = new DockerodeClientFactory()
+  ): Promise<StartedGenericContainer> {
+    const dockerClient = dockerClientFactory.getClient();
+    const { Id, Ports } = await dockerClient.retrieveContainerInfoByName(name);
+
+    return new StartedGenericContainer(
+      dockerClient.getContainer(Id),
+      dockerClient.getHost(),
+      Ports.reduce(
+        (boundPorts, { PrivatePort, PublicPort }) => boundPorts.setBinding(PrivatePort, PublicPort),
+        new BoundPorts()
+      ),
+      name,
+      dockerClient
+    );
+  }
+
   private readonly repoTag: RepoTag;
   private readonly dockerClient: DockerClient;
 
@@ -228,25 +247,7 @@ export class GenericContainer implements TestContainer {
   }
 }
 
-export class StartedGenericContainer implements StartedTestContainer {
-  public static async findByName(
-    name: string,
-    dockerClientFactory: DockerClientFactory = new DockerodeClientFactory()
-  ): Promise<StartedGenericContainer> {
-    const dockerClient = dockerClientFactory.getClient();
-    const { Id, Ports } = await dockerClient.retrieveContainerInfoByName(name);
-
-    return new StartedGenericContainer(
-      dockerClient.getContainer(Id),
-      dockerClient.getHost(),
-      Ports.reduce(
-        (boundPorts, { PrivatePort, PublicPort }) => boundPorts.setBinding(PrivatePort, PublicPort),
-        new BoundPorts()
-      ),
-      name,
-      dockerClient
-    );
-  }
+class StartedGenericContainer implements StartedTestContainer {
   constructor(
     private readonly container: Container,
     private readonly host: Host,
