@@ -47,4 +47,27 @@ describe("Network", () => {
   it("instantiating Network should throw", () => {
     expect(() => new Network()).toThrowError("use static newNetwork() method to instantiate network");
   });
+
+  it("Network.fromId()", async () => {
+    const network1 = await Network.newNetwork();
+    const network2 = await Network.fromId(network1.getId());
+
+    expect(network1.getName()).toBe(network2.getName());
+    await network1.close();
+    await expect(network2.inspect()).rejects.toThrow();
+    expect(network2.isInitialized).toBe(false);
+  });
+
+  it("Network.hasContainers()", async () => {
+    const network = await Network.newNetwork();
+    const container = await new GenericContainer("cristianrgreco/testcontainer", "1.1.12")
+      .withName("container")
+      .withNetworkMode(network.getName())
+      .start();
+
+    await expect(network.hasContainers()).resolves.toBe(true);
+    await container.stop();
+    await expect(network.hasContainers()).resolves.toBe(false);
+    await network.close();
+  });
 });

@@ -6,6 +6,7 @@ import { BoundPorts } from "./bound-ports";
 import { Container, DockerodeContainer } from "./container";
 import { Host } from "./docker-client-factory";
 import log from "./logger";
+import { CreateNetworkOptions } from "./network";
 import { PortString } from "./port";
 import { RepoTag } from "./repo-tag";
 
@@ -83,23 +84,12 @@ type CreateOptions = {
   useDefaultLogDriver: boolean;
 };
 
-export type CreateNetworkOptions = {
-  name: string;
-  driver: "bridge" | "overlay" | string; // third option is for user-installed custom network drivers
-  checkDuplicate: boolean;
-  internal: boolean;
-  attachable: boolean;
-  ingress: boolean;
-  enableIPv6: boolean;
-  labels?: { [key: string]: string };
-  options?: { [key: string]: string };
-};
-
 export interface DockerClient {
   pull(repoTag: RepoTag, authConfig?: AuthConfig): Promise<void>;
   create(options: CreateOptions): Promise<Container>;
   getContainer(id: string): Container;
   retrieveContainerInfoByName(name: string): Promise<ContainerInfo>;
+  getNetwork(id: string): Network;
   createNetwork(options: CreateNetworkOptions): Promise<string>;
   removeNetwork(id: string): Promise<void>;
   start(container: Container): Promise<void>;
@@ -158,6 +148,10 @@ export class DockerodeClient implements DockerClient {
     return new DockerodeContainer(dockerodeContainer);
   }
 
+  public getNetwork(id: string): Network {
+    return this.dockerode.getNetwork(id);
+  }
+
   public async createNetwork(options: CreateNetworkOptions): Promise<string> {
     log.info(`Creating network ${options.name}`);
     const network: Network = await this.dockerode.createNetwork(options);
@@ -166,7 +160,7 @@ export class DockerodeClient implements DockerClient {
 
   public async removeNetwork(id: string): Promise<void> {
     log.info(`Removing network ${id}`);
-    const network = this.dockerode.getNetwork(id);
+    const network = this.getNetwork(id);
     const { message } = await network.remove();
     if (message) {
       log.warn(message);
