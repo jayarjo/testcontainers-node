@@ -43,8 +43,8 @@ declare class StartedNetwork implements TestNetwork {
 }
 export declare class Network {
     static newNetwork(partialOptions?: Partial<CreateNetworkOptions>, dockerClientFactory?: DockerodeClientFactory): Promise<StartedNetwork>;
-    static fromId(id: string, dockerClientFactory?: DockerodeClientFactory): Promise<StartedNetwork>;
-    static fromName(name: string, dockerClientFactory?: DockerodeClientFactory): Promise<StartedNetwork>;
+    static byId(id: string, dockerClientFactory?: DockerodeClientFactory): Promise<StartedNetwork>;
+    static byName(name: string, dockerClientFactory?: DockerodeClientFactory): Promise<StartedNetwork>;
     constructor();
 }
 export {};

@@ -69,7 +69,7 @@ class GenericContainer {
     static fromDockerfile(context) {
         return new GenericContainerBuilder(context);
     }
-    static fromName(name, dockerClientFactory = new docker_client_factory_1.DockerodeClientFactory()) {
+    static byName(name, dockerClientFactory = new docker_client_factory_1.DockerodeClientFactory()) {
         return __awaiter(this, void 0, void 0, function* () {
             const dockerClient = dockerClientFactory.getClient();
             const { Id, Ports } = yield dockerClient.retrieveContainerInfoByName(name);

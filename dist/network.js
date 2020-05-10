@@ -60,19 +60,19 @@ class StartedNetwork {
 class Network {
     static newNetwork(partialOptions = {}, dockerClientFactory = new docker_client_factory_1.DockerodeClientFactory()) {
         return __awaiter(this, void 0, void 0, function* () {
-            const options = Object.assign({ name: new uuid_1.RandomUuid().nextUuid(), driver: "bridge", checkDuplicate: true, internal: true, attachable: false, ingress: false, enableIPv6: false }, partialOptions);
+            const options = Object.assign({ name: new uuid_1.RandomUuid().nextUuid(), driver: "bridge", checkDuplicate: true, internal: false, attachable: false, ingress: false, enableIPv6: false }, partialOptions);
             const id = yield dockerClientFactory.getClient().createNetwork(options);
             return new StartedNetwork(id, options, dockerClientFactory);
         });
     }
-    static fromId(id, dockerClientFactory = new docker_client_factory_1.DockerodeClientFactory()) {
+    static byId(id, dockerClientFactory = new docker_client_factory_1.DockerodeClientFactory()) {
         return __awaiter(this, void 0, void 0, function* () {
             const network = dockerClientFactory.getClient().getNetwork(id);
             const info = yield network.inspect();
             return new StartedNetwork(id, utils_1.lowerKeysDeep(info, ["IPAM"]), dockerClientFactory);
         });
     }
-    static fromName(name, dockerClientFactory = new docker_client_factory_1.DockerodeClientFactory()) {
+    static byName(name, dockerClientFactory = new docker_client_factory_1.DockerodeClientFactory()) {
         return __awaiter(this, void 0, void 0, function* () {
             const info = utils_1.lowerKeysDeep(yield dockerClientFactory.getClient().findNetworkByName(name), ["IPAM"]);
             return new StartedNetwork(info.id, info, dockerClientFactory);
