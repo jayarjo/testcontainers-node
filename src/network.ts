@@ -95,7 +95,7 @@ export class Network {
     return new StartedNetwork(id, options, dockerClientFactory);
   }
 
-  public static async fromId(
+  public static async byId(
     id: string,
     dockerClientFactory: DockerodeClientFactory = new DockerodeClientFactory()
   ): Promise<StartedNetwork> {
@@ -104,7 +104,7 @@ export class Network {
     return new StartedNetwork(id, lowerKeysDeep(info, ["IPAM"]), dockerClientFactory);
   }
 
-  public static async fromName(
+  public static async byName(
     name: string,
     dockerClientFactory: DockerodeClientFactory = new DockerodeClientFactory()
   ): Promise<StartedNetwork> {

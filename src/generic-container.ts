@@ -74,7 +74,7 @@ export class GenericContainer implements TestContainer {
     return new GenericContainerBuilder(context);
   }
 
-  public static async fromName(
+  public static async byName(
     name: string,
     dockerClientFactory: DockerClientFactory = new DockerodeClientFactory()
   ): Promise<StartedGenericContainer> {

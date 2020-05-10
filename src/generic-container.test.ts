@@ -190,14 +190,14 @@ describe("GenericContainer", () => {
     await container.stop();
   });
 
-  it("GenericContainer.fromName", async () => {
+  it("GenericContainer.byName()", async () => {
     const randomName = `test-container-${Date.now()}`;
     const container = await new GenericContainer("cristianrgreco/testcontainer", "1.1.12")
       .withExposedPort(8080, 8888)
       .withName(randomName)
       .start();
 
-    const foundContainer = await GenericContainer.fromName(randomName);
+    const foundContainer = await GenericContainer.byName(randomName);
     expect(foundContainer.getName()).toBe(randomName);
     expect(foundContainer.getMappedPort(8080)).toBe(8888);
 

@@ -48,9 +48,9 @@ describe("Network", () => {
     expect(() => new Network()).toThrowError("use static newNetwork() method to instantiate network");
   });
 
-  it("Network.fromId()", async () => {
+  it("Network.byId()", async () => {
     const network1 = await Network.newNetwork();
-    const network2 = await Network.fromId(network1.getId());
+    const network2 = await Network.byId(network1.getId());
 
     expect(network1.getName()).toBe(network2.getName());
     await network1.close();
@@ -58,12 +58,12 @@ describe("Network", () => {
     expect(network2.isInitialized).toBe(false);
   });
 
-  it("Network.fromName()", async () => {
+  it("Network.byName()", async () => {
     const name = `testcontainers-${Date.now()}`;
     const network1 = await Network.newNetwork({
       name
     });
-    const network2 = await Network.fromName(name);
+    const network2 = await Network.byName(name);
     expect(network1.getId()).toBe(network2.getId());
     await network1.close();
   });
