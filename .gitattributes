@@ -1,0 +1,7 @@
+src/ export-ignore
+node_modules/ export-ignore
+jest.config.js export-ignore
+tsconfig.json export-ignore
+tslint.json export-ignore
+docker* export-ignore
+.* export-ignore
