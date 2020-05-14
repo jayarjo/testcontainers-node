@@ -80,4 +80,24 @@ describe("Network", () => {
     await expect(network.hasContainers()).resolves.toBe(false);
     await network.close();
   });
+
+  it("grab all internal IPs per network", async () => {
+    let container;
+    let network;
+    try {
+      network = await Network.newNetwork();
+
+      container = await new GenericContainer("cristianrgreco/testcontainer", "1.1.12")
+        .withName("container")
+        .withNetworkMode(network.getName())
+        .start();
+
+      const { internalIps } = await container.inspect();
+      expect(internalIps).toHaveProperty(network.getName());
+      expect(internalIps[network.getName()]).toMatch(/^(192|172)\.\d+\.\d+\.\d+$/);
+    } finally {
+      await container?.stop();
+      await network?.close();
+    }
+  });
 });

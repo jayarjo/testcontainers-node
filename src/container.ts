@@ -1,5 +1,6 @@
 import byline from "byline";
 import dockerode, { ContainerInspectInfo } from "dockerode";
+import { zipObject } from "lodash";
 import { Duration, TemporalUnit } from "node-duration";
 import { Command, ContainerName, ExitCode } from "./docker-client";
 import { Host } from "./docker-client-factory";
@@ -11,7 +12,7 @@ export type HealthCheckStatus = "none" | "starting" | "unhealthy" | "healthy";
 
 export type InspectResult = {
   internalPorts: Port[];
-  internalIp: Host;
+  internalIps: Record<string, Host>;
   hostPorts: Port[];
   name: ContainerName;
   healthCheckStatus: HealthCheckStatus;
@@ -115,7 +116,7 @@ export class DockerodeContainer implements Container {
     return {
       hostPorts: this.getHostPorts(inspectResult),
       internalPorts: this.getInternalPorts(inspectResult),
-      internalIp: this.getInternalIp(inspectResult),
+      internalIps: this.getIpsPerNetwork(inspectResult),
       name: this.getName(inspectResult),
       healthCheckStatus: this.getHealthCheckStatus(inspectResult)
     };
@@ -129,8 +130,10 @@ export class DockerodeContainer implements Container {
     return Object.keys(inspectInfo.NetworkSettings.Ports).map(port => Number(port.split("/")[0]));
   }
 
-  private getInternalIp(inspectInfo: ContainerInspectInfo): Host {
-    return inspectInfo.NetworkSettings.IPAddress;
+  private getIpsPerNetwork(inspectInfo: ContainerInspectInfo): Record<string, Host> {
+    const networkNames = Object.keys(inspectInfo.NetworkSettings.Networks);
+    const ips = Object.values(inspectInfo.NetworkSettings.Networks).map(({ IPAddress }) => IPAddress);
+    return zipObject(networkNames, ips);
   }
 
   private getHostPorts(inspectInfo: ContainerInspectInfo): Port[] {
