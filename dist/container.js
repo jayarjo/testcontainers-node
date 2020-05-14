@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const byline_1 = __importDefault(require("byline"));
-const lodash_1 = require("lodash");
 const node_duration_1 = require("node-duration");
 class DockerodeContainer {
     constructor(container) {
@@ -92,7 +91,7 @@ class DockerodeContainer {
     getIpsPerNetwork(inspectInfo) {
         const networkNames = Object.keys(inspectInfo.NetworkSettings.Networks);
         const ips = Object.values(inspectInfo.NetworkSettings.Networks).map(({ IPAddress }) => IPAddress);
-        return lodash_1.zipObject(networkNames, ips);
+        return networkNames.reduce((acc, name, idx) => (Object.assign(Object.assign({}, acc), { [name]: ips[idx] })), {});
     }
     getHostPorts(inspectInfo) {
         return Object.values(inspectInfo.NetworkSettings.Ports)
