@@ -8,7 +8,7 @@ export declare type Id = string;
 export declare type HealthCheckStatus = "none" | "starting" | "unhealthy" | "healthy";
 export declare type InspectResult = {
     internalPorts: Port[];
-    internalIp: Host;
+    internalIps: Record<string, Host>;
     hostPorts: Port[];
     name: ContainerName;
     healthCheckStatus: HealthCheckStatus;
@@ -54,7 +54,7 @@ export declare class DockerodeContainer implements Container {
     inspect(): Promise<InspectResult>;
     private getName;
     private getInternalPorts;
-    private getInternalIp;
+    private getIpsPerNetwork;
     private getHostPorts;
     private getHealthCheckStatus;
 }
