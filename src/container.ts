@@ -1,6 +1,5 @@
 import byline from "byline";
 import dockerode, { ContainerInspectInfo } from "dockerode";
-import { zipObject } from "lodash";
 import { Duration, TemporalUnit } from "node-duration";
 import { Command, ContainerName, ExitCode } from "./docker-client";
 import { Host } from "./docker-client-factory";
@@ -133,7 +132,7 @@ export class DockerodeContainer implements Container {
   private getIpsPerNetwork(inspectInfo: ContainerInspectInfo): Record<string, Host> {
     const networkNames = Object.keys(inspectInfo.NetworkSettings.Networks);
     const ips = Object.values(inspectInfo.NetworkSettings.Networks).map(({ IPAddress }) => IPAddress);
-    return zipObject(networkNames, ips);
+    return networkNames.reduce((acc, name, idx) => ({ ...acc, [name]: ips[idx] }), {});
   }
 
   private getHostPorts(inspectInfo: ContainerInspectInfo): Port[] {
