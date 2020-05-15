@@ -69,11 +69,12 @@ class GenericContainer {
     static fromDockerfile(context) {
         return new GenericContainerBuilder(context);
     }
-    static byName(name, dockerClientFactory = new docker_client_factory_1.DockerodeClientFactory()) {
+    static byName(namePrefix, dockerClientFactory = new docker_client_factory_1.DockerodeClientFactory()) {
         return __awaiter(this, void 0, void 0, function* () {
             const dockerClient = dockerClientFactory.getClient();
-            const { Id, Ports } = yield dockerClient.retrieveContainerInfoByName(name);
-            return new StartedGenericContainer(dockerClient.getContainer(Id), dockerClient.getHost(), Ports.reduce((boundPorts, { PrivatePort, PublicPort }) => boundPorts.setBinding(PrivatePort, PublicPort), new bound_ports_1.BoundPorts()), name, dockerClient);
+            const { Id, Ports, Names: [name] } = yield dockerClient.retrieveContainerInfoByName(namePrefix);
+            return new StartedGenericContainer(dockerClient.getContainer(Id), dockerClient.getHost(), Ports.reduce((boundPorts, { PrivatePort, PublicPort }) => boundPorts.setBinding(PrivatePort, PublicPort), new bound_ports_1.BoundPorts()), name.replace(/^\/+/, ""), // container names are prefixed with slash
+            dockerClient);
         });
     }
     start() {

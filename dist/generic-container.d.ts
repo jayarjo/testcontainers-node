@@ -23,7 +23,7 @@ export declare class GenericContainer implements TestContainer {
     readonly tag: Tag;
     readonly dockerClientFactory: DockerClientFactory;
     static fromDockerfile(context: BuildContext): GenericContainerBuilder;
-    static byName(name: string, dockerClientFactory?: DockerClientFactory): Promise<StartedGenericContainer>;
+    static byName(namePrefix: string, dockerClientFactory?: DockerClientFactory): Promise<StartedGenericContainer>;
     private readonly repoTag;
     private readonly dockerClient;
     private env;
