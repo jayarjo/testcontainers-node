@@ -75,11 +75,15 @@ export class GenericContainer implements TestContainer {
   }
 
   public static async byName(
-    name: string,
+    namePrefix: string,
     dockerClientFactory: DockerClientFactory = new DockerodeClientFactory()
   ): Promise<StartedGenericContainer> {
     const dockerClient = dockerClientFactory.getClient();
-    const { Id, Ports } = await dockerClient.retrieveContainerInfoByName(name);
+    const {
+      Id,
+      Ports,
+      Names: [name]
+    } = await dockerClient.retrieveContainerInfoByName(namePrefix);
 
     return new StartedGenericContainer(
       dockerClient.getContainer(Id),
@@ -88,7 +92,7 @@ export class GenericContainer implements TestContainer {
         (boundPorts, { PrivatePort, PublicPort }) => boundPorts.setBinding(PrivatePort, PublicPort),
         new BoundPorts()
       ),
-      name,
+      name.replace(/^\/+/, ""), // container names are prefixed with slash
       dockerClient
     );
   }
